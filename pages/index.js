@@ -1,65 +1,66 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useAuth } from "../lib/auth";
+import { getToken } from "../lib/db";
+import React, { useState, useEffect } from "react";
+var OAuth = require("oauth");
+export default function Index() {
+  // var docRef = db.collection("users").doc(auth.user.uid);
+  const [userInfo, setUserInfo] = useState(null);
 
-export default function Home() {
+  useEffect(() => {
+    getToken(auth.user.uid).then((response) =>
+      setUserInfo(response.accessToken)
+    );
+  });
+
+  function onButton() {
+    var twitter_application_consumer_key = process.env.NEXT_PUBLIC_API_KEY; // API Key
+    var twitter_application_secret = process.env.NEXT_PUBLIC_API_SECRET; // API Secret
+    var twitter_user_access_token = userInfo.accessToken; // Access Token
+    var twitter_user_secret = userInfo.secret; // Access Token Secret
+
+    var oauth = new OAuth.OAuth(
+      "https://api.twitter.com/oauth/request_token",
+      "https://api.twitter.com/oauth/access_token",
+      twitter_application_consumer_key,
+      twitter_application_secret,
+      "1.0A",
+      null,
+      "HMAC-SHA1"
+    );
+
+    var status = "TYthis is a test of the api";
+    var postBody = {
+      status: status,
+    };
+
+    oauth.post(
+      "https://api.twitter.com/1.1/statuses/update.json",
+      twitter_user_access_token, // oauth_token (user access token)
+      twitter_user_secret, // oauth_secret (user secret)
+      postBody, // post body
+      "", // post content type ?
+      function (err, data, res) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("FUCK", data);
+        }
+      }
+    );
+
+    console.log("NADE IT");
+  }
+  const auth = useAuth();
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+    <>
+      {auth?.user ? (
+        <>
+          <button onClick={(e) => auth.signout()}>Sign Out</button>
+          <button onClick={onButton}>Get Token</button>
+        </>
+      ) : (
+        <button onClick={(e) => auth.signinWithTwitter()}>Sign In</button>
+      )}
+    </>
+  );
 }
