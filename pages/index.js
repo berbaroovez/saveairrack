@@ -1,5 +1,5 @@
 import { useAuth } from "../lib/auth";
-import { getToken } from "../lib/db";
+import { getUsers } from "../lib/db";
 import React, { useState, useEffect } from "react";
 var OAuth = require("oauth");
 export default function Index() {
@@ -7,9 +7,7 @@ export default function Index() {
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    getToken(auth.user.uid).then((response) =>
-      setUserInfo(response.accessToken)
-    );
+    console.log("USER", getUsers());
   });
 
   function onButton() {
@@ -56,7 +54,6 @@ export default function Index() {
       {auth?.user ? (
         <>
           <button onClick={(e) => auth.signout()}>Sign Out</button>
-          <button onClick={onButton}>Get Token</button>
         </>
       ) : (
         <button onClick={(e) => auth.signinWithTwitter()}>Sign In</button>
