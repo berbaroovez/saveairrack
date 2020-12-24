@@ -32,7 +32,7 @@ export default function Index() {
             <span className=".hash">#</span>SAVEAIRRACK
           </Title>
           <SubTitle>
-            LETS PUSH AIRRACK TO A MILLION SUB BY TWEETING OUT HIS CHANNEL
+            LETS PUSH AIRRACK TO A MILLION SUBS BY TWEETING OUT HIS CHANNEL
             <span className=".hash"> #</span>SAVEAIRRACK
           </SubTitle>
         </LeftColumn>
