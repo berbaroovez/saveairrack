@@ -1,6 +1,6 @@
 import { useAuth } from "../lib/auth";
 import styled from "styled-components";
-
+import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import Arrow from "../lib/smooth-arrow.svg";
 export default function Index() {
@@ -43,6 +43,9 @@ export default function Index() {
           <ArrowIMG src="https://saveairrack.com/vectors/smooth-arrow.svg" />
         </RightColumn>
       </HeroContainer>
+      <Head>
+        <title>#SaveAirrack</title>
+      </Head>
     </>
   );
 }
